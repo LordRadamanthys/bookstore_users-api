@@ -3,8 +3,10 @@ package users
 import (
 	"fmt"
 
+	"github.com/LordRadamanthys/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/date"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -25,7 +27,9 @@ func (user *User) Save() *errors.RestErr {
 }
 
 func (user *User) Get() *errors.RestErr {
-
+	if err := users_db.Client.Ping(); err != nil {
+		panic(err)
+	}
 	result := userDB[user.Id]
 	if result == nil {
 		return errors.NotFoundError(fmt.Sprintf("user %d not found", user.Id))
