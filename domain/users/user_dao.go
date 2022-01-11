@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/LordRadamanthys/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/date"
@@ -13,16 +14,32 @@ var (
 	userDB = make(map[int]*User)
 )
 
+const (
+	queryInsertUser = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?,?,?,?);"
+)
+
 func (user *User) Save() *errors.RestErr {
-	current := userDB[user.Id]
-	if current != nil {
-		if current.Email == user.Email {
+	stmt, err := users_db.Client.Prepare(queryInsertUser)
+
+	if err != nil {
+		return errors.InternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	user.DateCreated = date.GetDateNowString()
+	insertResult, err := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "email_UNIQUE") {
 			return errors.BadRequestError(fmt.Sprintf("email %s already exists", user.Email))
 		}
-		return errors.BadRequestError(fmt.Sprintf("user %d already exists", user.Id))
+		return errors.InternalServerError(err.Error())
 	}
-	user.DateCreated = date.GetDateNowString()
-	userDB[user.Id] = user
+	userID, err := insertResult.LastInsertId()
+	if err != nil {
+		return errors.InternalServerError(fmt.Sprintf("error when trying to save user: %s", err.Error()))
+	}
+	user.Id = int(userID)
 	return nil
 }
 
