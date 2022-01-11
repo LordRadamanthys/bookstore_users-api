@@ -42,7 +42,7 @@ func GetUser(c *gin.Context) {
 		c.JSON(getErr.Status, getErr)
 		return
 	}
-	c.JSON(http.StatusCreated, user)
+	c.JSON(http.StatusOK, user)
 }
 
 func SearchUser(c *gin.Context) {
