@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/LordRadamanthys/bookstore_users-api/datasources/mysql/users_db"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/date"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
@@ -12,6 +14,7 @@ const (
 	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?,?,?,?);"
 	queryUpdateUser  = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
 	queryGetUser     = "SELECT id, first_name, last_name, email, date_created from users WHERE id = ?;"
+	queryDeleteUser  = "DELETE FROM users WHERE id =?;"
 	indexUniqueEmail = "email_UNIQUE"
 	errorNoRows      = "no rows in result set"
 )
@@ -71,5 +74,20 @@ func (user *User) Get() *errors.RestErr {
 	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); getErr != nil {
 		return mysql_utils.ParseError(getErr)
 	}
+	return nil
+}
+
+func (user *User) Delete() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryDeleteUser)
+	if err != nil {
+		return errors.InternalServerError(err.Error())
+	}
+	defer stmt.Close()
+
+	fmt.Println(user)
+	if _, deleteErr := stmt.Exec(user.Id); deleteErr != nil {
+		return mysql_utils.ParseError(err)
+	}
+
 	return nil
 }

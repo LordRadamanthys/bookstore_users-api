@@ -56,3 +56,16 @@ func GetUser(userID int) (*users.User, *errors.RestErr) {
 
 	return &result, nil
 }
+
+func DeleteUser(userID int) *errors.RestErr {
+	user, err := GetUser(userID)
+
+	if err != nil {
+		return err
+	}
+	if deleteErr := user.Delete(); deleteErr != nil {
+		return deleteErr
+	}
+
+	return nil
+}

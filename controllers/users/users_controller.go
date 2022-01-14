@@ -71,6 +71,23 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func DeleteUser(c *gin.Context) {
+	userId, userErr := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if userErr != nil {
+		err := errors.BadRequestError("invalid user id")
+		c.JSON(err.Status, err)
+		return
+	}
+
+	if deleteErr := services.DeleteUser(int(userId)); deleteErr != nil {
+		c.JSON(deleteErr.Status, deleteErr)
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
+
+}
+
 func SearchUser(c *gin.Context) {
 	c.String(http.StatusNotImplemented, "implement me!")
 }
