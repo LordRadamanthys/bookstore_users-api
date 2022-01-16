@@ -88,6 +88,15 @@ func DeleteUser(c *gin.Context) {
 
 }
 
-func SearchUser(c *gin.Context) {
-	c.String(http.StatusNotImplemented, "implement me!")
+func Search(c *gin.Context) {
+	status := c.Query("status")
+
+	users, err := services.FindByStatus(status)
+
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }

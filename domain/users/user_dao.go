@@ -11,12 +11,13 @@ import (
 )
 
 const (
-	queryInsertUser  = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?,?,?,?);"
-	queryUpdateUser  = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
-	queryGetUser     = "SELECT id, first_name, last_name, email, date_created from users WHERE id = ?;"
-	queryDeleteUser  = "DELETE FROM users WHERE id =?;"
-	indexUniqueEmail = "email_UNIQUE"
-	errorNoRows      = "no rows in result set"
+	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?,?,?,?);"
+	queryUpdateUser       = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
+	queryGetUser          = "SELECT id, first_name, last_name, email, date_created from users WHERE id = ?;"
+	queryDeleteUser       = "DELETE FROM users WHERE id =?;"
+	queryFindUserByStatus = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?;"
+	indexUniqueEmail      = "email_UNIQUE"
+	errorNoRows           = "no rows in result set"
 )
 
 func (user *User) Save() *errors.RestErr {
@@ -90,4 +91,35 @@ func (user *User) Delete() *errors.RestErr {
 	}
 
 	return nil
+}
+
+func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
+	stmt, err := users_db.Client.Prepare(queryFindUserByStatus)
+
+	if err != nil {
+		return nil, errors.InternalServerError(err.Error())
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(status)
+	if err != nil {
+		return nil, errors.InternalServerError(err.Error())
+	}
+
+	defer rows.Close()
+
+	results := make([]User, 0)
+	for rows.Next() {
+		var user User
+
+		if err := rows.Scan(&user.FirstName, &user.LastName, &user.Email, &user.DateCreated, &user.Status); err != nil {
+			return nil, mysql_utils.ParseError(err)
+		}
+		results = append(results, user)
+	}
+	if len(results) == 0 {
+		return nil, errors.NotFoundError(fmt.Sprintf("no users matching status %s", status))
+	}
+	return results, nil
 }
