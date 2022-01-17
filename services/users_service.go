@@ -7,7 +7,21 @@ import (
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
 )
 
-func CreateUser(user users.User) (*users.User, *errors.RestErr) {
+var (
+	UserService usersServiceInterface = &usersService{}
+)
+
+type usersService struct{}
+
+type usersServiceInterface interface {
+	CreateUser(user users.User) (*users.User, *errors.RestErr)
+	UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr)
+	GetUser(userID int) (*users.User, *errors.RestErr)
+	DeleteUser(userID int) *errors.RestErr
+	FindByStatus(status string) (users.Users, *errors.RestErr)
+}
+
+func (s *usersService) CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
@@ -21,8 +35,8 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	return &user, nil
 }
 
-func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
-	current, err := GetUser(user.Id)
+func (s *usersService) UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) {
+	current, err := s.GetUser(user.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +65,7 @@ func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) 
 	return current, nil
 }
 
-func GetUser(userID int) (*users.User, *errors.RestErr) {
+func (s *usersService) GetUser(userID int) (*users.User, *errors.RestErr) {
 
 	result := users.User{Id: userID}
 
@@ -62,8 +76,8 @@ func GetUser(userID int) (*users.User, *errors.RestErr) {
 	return &result, nil
 }
 
-func DeleteUser(userID int) *errors.RestErr {
-	user, err := GetUser(userID)
+func (s *usersService) DeleteUser(userID int) *errors.RestErr {
+	user, err := s.GetUser(userID)
 
 	if err != nil {
 		return err
@@ -75,7 +89,7 @@ func DeleteUser(userID int) *errors.RestErr {
 	return nil
 }
 
-func FindByStatus(status string) (users.Users, *errors.RestErr) {
+func (s *usersService) FindByStatus(status string) (users.Users, *errors.RestErr) {
 	dao := &users.User{}
 	return dao.FindByStatus(status)
 }
