@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	"github.com/LordRadamanthys/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/LordRadamanthys/bookstore_users-api/utils/date"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/mysql_utils"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created) VALUES (?,?,?,?);"
+	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created, password, status) VALUES (?,?,?,?,?,?);"
 	queryUpdateUser       = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
-	queryGetUser          = "SELECT id, first_name, last_name, email, date_created from users WHERE id = ?;"
+	queryGetUser          = "SELECT id, first_name, last_name, email, status, date_created from users WHERE id = ?;"
 	queryDeleteUser       = "DELETE FROM users WHERE id =?;"
 	queryFindUserByStatus = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?;"
 	indexUniqueEmail      = "email_UNIQUE"
@@ -28,8 +27,13 @@ func (user *User) Save() *errors.RestErr {
 	}
 	defer stmt.Close()
 
-	user.DateCreated = date.GetDateNowString()
-	insertResult, saveErr := stmt.Exec(user.FirstName, user.LastName, user.Email, user.DateCreated)
+	fmt.Printf(user.Status)
+	insertResult, saveErr := stmt.Exec(user.FirstName,
+		user.LastName,
+		user.Email,
+		user.DateCreated,
+		user.Password,
+		user.Status)
 
 	if saveErr != nil {
 		return mysql_utils.ParseError(saveErr)
@@ -72,7 +76,7 @@ func (user *User) Get() *errors.RestErr {
 
 	result := stmt.QueryRow(int(user.Id))
 
-	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.DateCreated); getErr != nil {
+	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); getErr != nil {
 		return mysql_utils.ParseError(getErr)
 	}
 	return nil
@@ -113,7 +117,7 @@ func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
 	for rows.Next() {
 		var user User
 
-		if err := rows.Scan(&user.FirstName, &user.LastName, &user.Email, &user.DateCreated, &user.Status); err != nil {
+		if err := rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); err != nil {
 			return nil, mysql_utils.ParseError(err)
 		}
 		results = append(results, user)

@@ -1,9 +1,14 @@
 package users
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
+)
+
+const (
+	StatusActive = "active"
 )
 
 type User struct {
@@ -13,7 +18,7 @@ type User struct {
 	Email       string `json:"email"`
 	DateCreated string `json:"date_created"`
 	Status      string `json:"status"`
-	Password    string `json:"-"`
+	Password    string `json:"password"`
 }
 
 func (user *User) Validate() *errors.RestErr {
@@ -23,6 +28,12 @@ func (user *User) Validate() *errors.RestErr {
 
 	if user.Email == "" {
 		return errors.BadRequestError("Invalid email address!")
+	}
+	user.Password = strings.TrimSpace(user.Password)
+
+	fmt.Println(user.Password)
+	if user.Password == "" {
+		return errors.BadRequestError("invalid password!")
 	}
 	return nil
 }
