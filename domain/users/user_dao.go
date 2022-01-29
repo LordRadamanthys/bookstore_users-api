@@ -10,13 +10,14 @@ import (
 )
 
 const (
-	queryInsertUser       = "INSERT INTO users(first_name, last_name, email, date_created, password, status) VALUES (?,?,?,?,?,?);"
-	queryUpdateUser       = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
-	queryGetUser          = "SELECT id, first_name, last_name, email, status, date_created from users WHERE id = ?;"
-	queryDeleteUser       = "DELETE FROM users WHERE id =?;"
-	queryFindUserByStatus = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?;"
-	indexUniqueEmail      = "email_UNIQUE"
-	errorNoRows           = "no rows in result set"
+	queryInsertUser           = "INSERT INTO users(first_name, last_name, email, date_created, password, status) VALUES (?,?,?,?,?,?);"
+	queryUpdateUser           = "UPDATE users SET first_name=?, last_name=?, email=? WHERE id=?"
+	queryGetUser              = "SELECT id, first_name, last_name, email, status, date_created from users WHERE id = ?;"
+	queryDeleteUser           = "DELETE FROM users WHERE id =?;"
+	queryFindUserByStatus     = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE status=?;"
+	queryFindEmailAndPassword = "SELECT id, first_name, last_name, email, date_created, status FROM users WHERE email=? AND password=? AND status=?;"
+	indexUniqueEmail          = "email_UNIQUE"
+	errorNoRows               = "no rows in result set"
 )
 
 func (user *User) Save() *errors.RestErr {
@@ -126,4 +127,21 @@ func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
 		return nil, errors.NotFoundError(fmt.Sprintf("no users matching status %s", status))
 	}
 	return results, nil
+}
+
+func (user *User) FindByEmailAndPassword() *errors.RestErr {
+	stmt, err := users_db.Client.Prepare(queryFindEmailAndPassword)
+
+	if err != nil {
+		return errors.InternalServerError(err.Error())
+	}
+
+	defer stmt.Close()
+
+	result := stmt.QueryRow(user.Email, user.Password, StatusActive)
+
+	if getErr := result.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Status, &user.DateCreated); getErr != nil {
+		return mysql_utils.ParseError(getErr)
+	}
+	return nil
 }
