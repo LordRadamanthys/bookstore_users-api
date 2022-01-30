@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Bookstore-GolangMS/bookstore_oauth-go/oauth"
 	"github.com/LordRadamanthys/bookstore_users-api/domain/users"
 	"github.com/LordRadamanthys/bookstore_users-api/services"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
@@ -29,6 +30,21 @@ func CreateUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
+
+	if err := oauth.AuthenticateRequest(c.Request); err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+
+	if callerId := oauth.GetCallerId(c.Request); callerId == 0 {
+		err := errors.RestErr{
+			Status:  http.StatusUnauthorized,
+			Message: "resource not available",
+		}
+		c.JSON(err.Status, err)
+		return
+	}
+
 	userId, userErr := strconv.ParseInt(c.Param("user_id"), 10, 64)
 
 	if userErr != nil {
@@ -43,7 +59,12 @@ func GetUser(c *gin.Context) {
 		c.JSON(getErr.Status, getErr)
 		return
 	}
-	isPublicRequest := c.GetHeader("X-Public") == "true"
+
+	if oauth.GetCallerId(c.Request) == int64(user.Id) {
+		c.JSON(http.StatusOK, user.Marshall(false))
+		return
+	}
+	isPublicRequest := oauth.IsPublic(c.Request)
 	c.JSON(http.StatusOK, user.Marshall(isPublicRequest))
 }
 

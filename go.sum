@@ -1,3 +1,7 @@
+github.com/Bookstore-GolangMS/bookstore_oauth-go v0.0.0-20210823193118-14764edf1796 h1:rmjRQ2CFIKlbBOn2xNiTyuaBes/IGw6ZCAuFtEUfqrY=
+github.com/Bookstore-GolangMS/bookstore_oauth-go v0.0.0-20210823193118-14764edf1796/go.mod h1:4KkQd8iOcaHfcjuYa8/7l3xfqwIX7RoYmIxze57i5uI=
+github.com/LordRadamanthys/-bookstore_oauth-go v0.0.0-20220130204519-cb21dc23c1d0 h1:4E5ziPLLv5RycLprzr2Sz8LWj/Y9PpN16wUe3lxz/nM=
+github.com/LordRadamanthys/-bookstore_oauth-go v0.0.0-20220130204519-cb21dc23c1d0/go.mod h1:2Rpzp35P0iDVmz/GUBy3KzgfSU7exa+e0lZUq79t0ac=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=
@@ -24,6 +28,8 @@ github.com/leodido/go-urn v1.2.0 h1:hpXL4XnriNwQ/ABnpepYM/1vCLWNDfUNts8dX3xTG6Y=
 github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgxpxOKII=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
+github.com/mercadolibre/golang-restclient v0.0.0-20170701022150-51958130a0a0 h1:EDOjA2IGgjSBlPlnW7CzBUo/o410SMiFh670jP29Kc4=
+github.com/mercadolibre/golang-restclient v0.0.0-20170701022150-51958130a0a0/go.mod h1:Z7qYja4aGk/RWl1yJtN1LXRvC7Hsbq8SEbqWWDrMqMs=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 h1:ZqeYNhU3OHLH3mGKHDcjJRFFRrJa6eAM5H+CtDdOsPc=
 github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 h1:Esafd1046DLDQ0W1YjYsBW+p8U2u7vzgW2SQVmlNazg=
