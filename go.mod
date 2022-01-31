@@ -11,6 +11,7 @@ require (
 require (
 	github.com/Bookstore-GolangMS/bookstore_oauth-go v0.0.0-20210823193118-14764edf1796 // indirect
 	github.com/LordRadamanthys/-bookstore_oauth-go v0.0.0-20220130204519-cb21dc23c1d0 // indirect
+	github.com/LordRadamanthys/bookstore_utils-go v0.0.0-20220131012342-90468be56c77 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect

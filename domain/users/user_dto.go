@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
+	"github.com/LordRadamanthys/bookstore_utils-go/rest_errors"
 )
 
 const (
@@ -23,19 +23,19 @@ type User struct {
 
 type Users []User
 
-func (user *User) Validate() *errors.RestErr {
+func (user *User) Validate() *rest_errors.RestErr {
 	user.Email = strings.TrimSpace(strings.ToLower(user.Email))
 	user.FirstName = strings.TrimSpace(strings.ToLower(user.FirstName))
 	user.LastName = strings.TrimSpace(strings.ToLower(user.LastName))
 
 	if user.Email == "" {
-		return errors.BadRequestError("Invalid email address!")
+		return rest_errors.BadRequestError("Invalid email address!", nil)
 	}
 	user.Password = strings.TrimSpace(user.Password)
 
 	fmt.Println(user.Password)
 	if user.Password == "" {
-		return errors.BadRequestError("invalid password!")
+		return rest_errors.BadRequestError("invalid password!", nil)
 	}
 	return nil
 }

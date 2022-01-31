@@ -2,6 +2,8 @@ github.com/Bookstore-GolangMS/bookstore_oauth-go v0.0.0-20210823193118-14764edf1
 github.com/Bookstore-GolangMS/bookstore_oauth-go v0.0.0-20210823193118-14764edf1796/go.mod h1:4KkQd8iOcaHfcjuYa8/7l3xfqwIX7RoYmIxze57i5uI=
 github.com/LordRadamanthys/-bookstore_oauth-go v0.0.0-20220130204519-cb21dc23c1d0 h1:4E5ziPLLv5RycLprzr2Sz8LWj/Y9PpN16wUe3lxz/nM=
 github.com/LordRadamanthys/-bookstore_oauth-go v0.0.0-20220130204519-cb21dc23c1d0/go.mod h1:2Rpzp35P0iDVmz/GUBy3KzgfSU7exa+e0lZUq79t0ac=
+github.com/LordRadamanthys/bookstore_utils-go v0.0.0-20220131012342-90468be56c77 h1:12P1J2EiscuuMOUiyJYNsQmrZyHOZci889kPxghlz9s=
+github.com/LordRadamanthys/bookstore_utils-go v0.0.0-20220131012342-90468be56c77/go.mod h1:yRFj5BIsUfcWG1KV+0JlX+NWuMKeA9xNMWZVjb/4u7Y=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gin-contrib/sse v0.1.0 h1:Y/yl/+YNO8GZSjAhjMsSuLt29uWRFHdHYUb5lYOV9qE=

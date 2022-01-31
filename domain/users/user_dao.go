@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/LordRadamanthys/bookstore_users-api/datasources/mysql/users_db"
-	"github.com/LordRadamanthys/bookstore_users-api/utils/errors"
 	"github.com/LordRadamanthys/bookstore_users-api/utils/mysql_utils"
+	"github.com/LordRadamanthys/bookstore_utils-go/rest_errors"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -20,11 +20,11 @@ const (
 	errorNoRows               = "no rows in result set"
 )
 
-func (user *User) Save() *errors.RestErr {
+func (user *User) Save() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryInsertUser)
 
 	if err != nil {
-		return errors.InternalServerError(err.Error())
+		return rest_errors.InternalServerError(err.Error(), err)
 	}
 	defer stmt.Close()
 
@@ -48,11 +48,11 @@ func (user *User) Save() *errors.RestErr {
 	return nil
 }
 
-func (user *User) Update() *errors.RestErr {
+func (user *User) Update() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryUpdateUser)
 
 	if err != nil {
-		return errors.InternalServerError(err.Error())
+		return rest_errors.InternalServerError(err.Error(), err)
 	}
 	defer stmt.Close()
 
@@ -64,14 +64,14 @@ func (user *User) Update() *errors.RestErr {
 	return nil
 }
 
-func (user *User) Get() *errors.RestErr {
+func (user *User) Get() *rest_errors.RestErr {
 	if err := users_db.Client.Ping(); err != nil {
 		panic(err)
 	}
 	stmt, err := users_db.Client.Prepare(queryGetUser)
 
 	if err != nil {
-		return errors.InternalServerError(err.Error())
+		return rest_errors.InternalServerError(err.Error(), err)
 	}
 	defer stmt.Close()
 
@@ -83,10 +83,10 @@ func (user *User) Get() *errors.RestErr {
 	return nil
 }
 
-func (user *User) Delete() *errors.RestErr {
+func (user *User) Delete() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryDeleteUser)
 	if err != nil {
-		return errors.InternalServerError(err.Error())
+		return rest_errors.InternalServerError(err.Error(), err)
 	}
 	defer stmt.Close()
 
@@ -98,18 +98,18 @@ func (user *User) Delete() *errors.RestErr {
 	return nil
 }
 
-func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
+func (user *User) FindByStatus(status string) ([]User, *rest_errors.RestErr) {
 	stmt, err := users_db.Client.Prepare(queryFindUserByStatus)
 
 	if err != nil {
-		return nil, errors.InternalServerError(err.Error())
+		return nil, rest_errors.InternalServerError(err.Error(), err)
 	}
 
 	defer stmt.Close()
 
 	rows, err := stmt.Query(status)
 	if err != nil {
-		return nil, errors.InternalServerError(err.Error())
+		return nil, rest_errors.InternalServerError(err.Error(), err)
 	}
 
 	defer rows.Close()
@@ -124,16 +124,16 @@ func (user *User) FindByStatus(status string) ([]User, *errors.RestErr) {
 		results = append(results, user)
 	}
 	if len(results) == 0 {
-		return nil, errors.NotFoundError(fmt.Sprintf("no users matching status %s", status))
+		return nil, rest_errors.NotFoundError(fmt.Sprintf("no users matching status %s", status), nil)
 	}
 	return results, nil
 }
 
-func (user *User) FindByEmailAndPassword() *errors.RestErr {
+func (user *User) FindByEmailAndPassword() *rest_errors.RestErr {
 	stmt, err := users_db.Client.Prepare(queryFindEmailAndPassword)
 
 	if err != nil {
-		return errors.InternalServerError(err.Error())
+		return rest_errors.InternalServerError(err.Error(), err)
 	}
 
 	defer stmt.Close()
